@@ -4,17 +4,17 @@ import React from 'react'
 
 export default function ContactSection() {
   return (
-    <section className="bg-white py-20 md:py-24">
+    <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
       {/* CONTAINER THAT DEFINES THE WIDTH OF BAR + CONTENT */}
       <div className="relative mx-auto w-[92%] max-w-6xl">
         {/* BLUE BAR – only under the content, a bit shorter than container */}
-        <div className="pointer-events-none absolute left-0 right-[10%] top-1/2 h-24 -translate-y-1/2 bg-[#202b46]" />
+        <div className="pointer-events-none absolute left-0 right-[10%] top-1/2 h-16 sm:h-20 md:h-24 -translate-y-1/2 bg-[#202b46]" />
 
         {/* CONTENT ON TOP OF BAR */}
-        <div className="relative z-10 flex flex-col gap-10 md:flex-row md:items-start">
+        <div className="relative z-10 flex flex-col gap-8 sm:gap-10 md:flex-row md:items-start">
           {/* LEFT: CONTACT INFO */}
           <div className="flex-1 md:max-w-sm">
-            <h2 className="mb-4 font-sans text-4xl md:text-5xl font-semibold tracking-[0.15em] uppercase text-[#202b46]">
+            <h2 className="mb-4 font-sans text-3xl sm:text-4xl md:text-5xl font-semibold tracking-[0.15em] uppercase text-[#202b46]">
               CONTACT US
             </h2>
 
@@ -32,8 +32,8 @@ export default function ContactSection() {
 
           {/* RIGHT: FORM CARD */}
           <div className="flex-1">
-            <div className="rounded-md bg-white px-6 py-8 shadow-[0_30px_70px_rgba(0,0,0,0.08)] md:px-10 md:py-10">
-              <h3 className="mb-8 font-sans text-2xl md:text-3xl font-semibold tracking-[0.12em] uppercase text-[#202b46]">
+            <div className="rounded-md bg-white px-4 sm:px-6 py-6 sm:py-8 shadow-[0_30px_70px_rgba(0,0,0,0.08)] md:px-10 md:py-10">
+              <h3 className="mb-6 sm:mb-8 font-sans text-xl sm:text-2xl md:text-3xl font-semibold tracking-[0.12em] uppercase text-[#202b46]">
                 WE&apos;RE HERE TO HELP YOU
               </h3>
 

@@ -193,26 +193,26 @@ export default function FAQPage() {
     <main className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="pt-24 pb-20">
-        <div className="container mx-auto px-6 max-w-4xl mt-10">
+      <div className="pt-20 sm:pt-24 pb-12 sm:pb-20">
+        <div className="container mx-auto px-4 sm:px-6 max-w-4xl mt-6 sm:mt-10">
           {/* Header */}
-          <div className="text-center mb-12 space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-tight leading-tight opacity-0 animate-slide-up animation-delay-200">
+          <div className="text-center mb-8 sm:mb-12 space-y-4 sm:space-y-6 animate-fade-in">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-tight leading-tight opacity-0 animate-slide-up animation-delay-200">
               Frequently Asked<br />
               <span className="text-navigatepinawa-blue">Questions</span>
             </h1>
-            <p className="text-gray-600 text-lg opacity-0 animate-slide-up animation-delay-300">
+            <p className="text-gray-600 text-base sm:text-lg opacity-0 animate-slide-up animation-delay-300 px-4">
               Please reach us through contact us section if you cannot find an answer to your question.
             </p>
           </div>
 
           {/* Chat Container */}
-          <div className="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col" style={{ height: '600px' }}>
+          <div className="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col" style={{ height: 'calc(100vh - 280px)', minHeight: '500px', maxHeight: '700px' }}>
             {/* Messages Area */}
             <div 
               ref={messagesContainerRef}
-              className="flex-1 overflow-y-auto p-6 space-y-4"
-              style={{ maxHeight: 'calc(600px - 200px)', scrollBehavior: 'smooth' }}
+              className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4"
+              style={{ scrollBehavior: 'smooth' }}
             >
               {messages.map((message) => (
                 <div
@@ -220,13 +220,13 @@ export default function FAQPage() {
                   className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                    className={`max-w-[85%] sm:max-w-[80%] rounded-lg px-3 sm:px-4 py-2 sm:py-3 ${
                       message.isUser
                         ? 'bg-navigatepinawa-blue text-white'
                         : 'bg-gray-100 text-gray-900'
                     }`}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
                       {message.text}
                       {!message.isUser && isTyping && message.id === messages[messages.length - 1]?.id && (
                         <span className="inline-block w-2 h-4 bg-gray-900 ml-1 animate-pulse">|</span>
@@ -239,7 +239,7 @@ export default function FAQPage() {
             </div>
 
             {/* Quick Questions */}
-            <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+            <div className="px-4 sm:px-6 py-2 sm:py-3 bg-gray-50 border-t border-gray-200">
               <p className="text-xs text-gray-500 mb-2">Quick questions:</p>
               <div className="flex flex-wrap gap-2">
                 {['Are pets allowed?', 'What are the differences?', 'What should I bring?', 'Is there WiFi?', 'Cancellation policy?'].map((q) => (
@@ -247,7 +247,7 @@ export default function FAQPage() {
                     key={q}
                     onClick={() => handleQuickQuestion(q)}
                     disabled={isTyping}
-                    className="text-xs px-3 py-1 bg-white border border-gray-300 rounded-full hover:bg-gray-100 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="text-xs px-2 sm:px-3 py-1 bg-white border border-gray-300 rounded-full hover:bg-gray-100 transition-colors text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {q}
                   </button>
@@ -256,21 +256,21 @@ export default function FAQPage() {
             </div>
 
             {/* Input Area */}
-            <form onSubmit={handleSend} className="p-4 border-t border-gray-200 bg-white">
-              <div className="flex space-x-3">
+            <form onSubmit={handleSend} className="p-3 sm:p-4 border-t border-gray-200 bg-white">
+              <div className="flex space-x-2 sm:space-x-3">
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Type your question here..."
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navigatepinawa-blue focus:border-transparent"
+                  className="flex-1 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navigatepinawa-blue focus:border-transparent text-sm sm:text-base"
                   disabled={isTyping}
                 />
                 <button
                   type="submit"
                   disabled={!input.trim() || isTyping}
-                  className="px-6 py-3 bg-navigatepinawa-blue text-white rounded-lg hover:bg-blue-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                  className="px-4 sm:px-6 py-2 sm:py-3 bg-navigatepinawa-blue text-white rounded-lg hover:bg-blue-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-sm sm:text-base"
                 >
                   Send
                 </button>

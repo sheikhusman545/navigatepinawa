@@ -14,8 +14,8 @@ export default function BookingForm() {
   }
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-2xl">
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="bg-white/90 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-2xl">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         {/* Location Field */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">

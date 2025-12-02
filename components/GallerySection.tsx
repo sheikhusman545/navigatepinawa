@@ -62,46 +62,46 @@ export default function GallerySection() {
   }, [])
 
   return (
-    <section className="relative bg-white py-20">
-      <div className="container mx-auto px-6">
+    <section className="relative bg-white py-12 sm:py-16 lg:py-20">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sm:mb-12 gap-4">
           <div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 uppercase mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 uppercase mb-2">
               NAVIGATE PINAWA LOCATIONS
             </h2>
-            <p className="text-gray-600 text-lg">Unlock new memories with us</p>
+            <p className="text-gray-600 text-base sm:text-lg">Unlock new memories with us</p>
           </div>
           
           {/* Navigation Controls */}
-          <div className="flex items-center space-x-4">
-            <span className="text-gray-900 font-medium uppercase text-sm">VIEW MORE</span>
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <span className="text-gray-900 font-medium uppercase text-xs sm:text-sm hidden sm:inline">VIEW MORE</span>
             <div className="flex space-x-2">
               <button
                 onClick={() => scroll('left')}
                 disabled={!showLeftArrow}
-                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all ${
                   showLeftArrow 
                     ? 'bg-blue-200 hover:bg-blue-300 text-white' 
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
                 aria-label="Scroll left"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <button
                 onClick={() => scroll('right')}
                 disabled={!showRightArrow}
-                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all ${
+                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all ${
                   showRightArrow 
                     ? 'bg-navigatepinawa-blue hover:bg-blue-900 text-white' 
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                 }`}
                 aria-label="Scroll right"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>

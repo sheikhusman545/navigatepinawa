@@ -77,17 +77,17 @@ export default function Footer() {
       />
 
        {/* MAIN WHITE CARD */}
-       <div className="relative max-w-6xl mx-auto bg-white shadow-xl rounded-none md:rounded-md px-6 md:px-12 py-12 md:py-16">
-         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-16">
+       <div className="relative max-w-6xl mx-auto bg-white shadow-xl rounded-none md:rounded-md px-4 sm:px-6 md:px-12 py-8 sm:py-12 md:py-16">
+         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 md:gap-16">
            {/* CUSTOMER REVIEWS */}
            <div>
-            <h3 className="text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-10">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-6 sm:mb-8 md:mb-10">
               CUSTOMER REVIEWS
             </h3>
 
             {/* Single review slider to mimic their layout + dots */}
-            <div className="flex items-start space-x-4 md:space-x-5 mb-4">
-              <div className="relative w-16 h-16 md:w-18 md:h-18 rounded-full overflow-hidden flex-shrink-0">
+            <div className="flex items-start space-x-3 sm:space-x-4 md:space-x-5 mb-4">
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 rounded-full overflow-hidden flex-shrink-0">
                 <Image
                   src={activeReview.image}
                   alt={activeReview.name}
@@ -99,7 +99,7 @@ export default function Footer() {
                 <h4 className="text-sm md:text-base font-bold text-[#464646] mb-2">
                   {activeReview.name}
                 </h4>
-                <p className="text-left text-[0.8125rem] leading-relaxed italic text-[#aaaaaa]">
+                <p className="text-left text-xs sm:text-[0.8125rem] leading-relaxed italic text-[#aaaaaa]">
                   {activeReview.text}
                 </p>
               </div>
@@ -133,7 +133,7 @@ export default function Footer() {
 
           {/* MENU */}
           <div>
-            <h3 className="text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-10">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-6 sm:mb-8 md:mb-10">
               MENU
             </h3>
             <ul className="space-y-3">
@@ -162,7 +162,7 @@ export default function Footer() {
 
           {/* JOURNAL */}
           <div>
-            <h3 className="text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-10">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-6 sm:mb-8 md:mb-10">
               JOURNAL
             </h3>
             <div className="space-y-5">
@@ -193,7 +193,7 @@ export default function Footer() {
           {/* WE ALSO HOST + SOCIAL */}
           <div className="flex flex-col justify-between">
             <div>
-              <h3 className="text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-10">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold tracking-[0.05em] uppercase text-[#464646] mb-6 sm:mb-8 md:mb-10">
                 WE ALSO HOST
               </h3>
               <div className="grid grid-cols-3 gap-3 mb-10">
@@ -291,31 +291,31 @@ export default function Footer() {
       </div>
 
       {/* DARK BLUE STRIP WITH LOGO + PAYMENT ICONS */}
-      <div className="bg-[#202b46] text-white mt-0 pt-10 pb-10">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="bg-[#202b46] text-white mt-0 pt-8 sm:pt-10 pb-8 sm:pb-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
            {/* Brand logo */}
-           <div className="flex items-center space-x-3">
+           <div className="flex items-center space-x-2 sm:space-x-3">
              <Image
                src="/logo.webp"
                alt="Navigate Pinawa Logo"
-               width={50}
-               height={50}
-               className="object-contain"
+               width={40}
+               height={40}
+               className="object-contain sm:w-[50px] sm:h-[50px]"
              />
-             <span className="text-2xl font-semibold tracking-wide">
+             <span className="text-xl sm:text-2xl font-semibold tracking-wide">
                Navigate Pinawa
              </span>
            </div>
 
           {/* Payment methods */}
-          <div className="flex items-center gap-4 text-xs font-semibold">
-            <div className="px-4 py-2 rounded bg-white/10 border border-white/20">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs font-semibold">
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded bg-white/10 border border-white/20">
               Mastercard
             </div>
-            <div className="px-4 py-2 rounded bg-white/10 border border-white/20">
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded bg-white/10 border border-white/20">
               VISA
             </div>
-            <div className="px-4 py-2 rounded bg-white/10 border border-white/20">
+            <div className="px-3 sm:px-4 py-1.5 sm:py-2 rounded bg-white/10 border border-white/20">
               HBL Pay
             </div>
           </div>

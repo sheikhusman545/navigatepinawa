@@ -86,11 +86,11 @@ export default function HeroSlider({ currentSlide, onSlideChange }: HeroSliderPr
 
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex items-center">
-        <div className="container mx-auto px-6 py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 sm:px-6 py-20 sm:py-32">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             {/* Hero Text */}
             <div className={`text-white transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-              <h1 className="text-5xl md:text-7xl font-bold uppercase leading-tight text-shadow mb-8 whitespace-pre-line">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold uppercase leading-tight text-shadow mb-6 sm:mb-8 whitespace-pre-line">
                 {currentSlideData.title}
               </h1>
             </div>
@@ -106,17 +106,17 @@ export default function HeroSlider({ currentSlide, onSlideChange }: HeroSliderPr
       </div>
 
       {/* Promotional Banner - Fixed within slider */}
-      <div className="absolute bottom-20 right-8 z-50 flex items-center space-x-4">
-        <div className="bg-navigatepinawa-orange px-6 py-3 rounded-lg border-2 border-dashed border-orange-600">
-          <p className="text-gray-900 font-bold text-sm uppercase">NAVIGATE PINAWA NOVEMBER RUSH</p>
+      <div className="absolute bottom-16 sm:bottom-20 right-4 sm:right-8 z-50 flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+        <div className="bg-navigatepinawa-orange px-4 sm:px-6 py-2 sm:py-3 rounded-lg border-2 border-dashed border-orange-600">
+          <p className="text-gray-900 font-bold text-xs sm:text-sm uppercase">NAVIGATE PINAWA NOVEMBER RUSH</p>
         </div>
-        <div className="bg-white px-4 py-3 rounded-lg border-2 border-dashed border-gray-400">
+        <div className="bg-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 border-dashed border-gray-400">
           <p className="text-gray-900 font-semibold text-xs">50% OFF or Free Night</p>
         </div>
       </div>
 
       {/* Slider Indicator - Absolute within slider */}
-      <div className="absolute bottom-8 left-8 z-50">
+      <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 z-50">
         <SliderIndicator 
           currentSlide={currentSlide} 
           totalSlides={6}
