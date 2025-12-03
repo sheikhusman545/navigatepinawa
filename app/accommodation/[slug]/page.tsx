@@ -6,6 +6,43 @@ import Header from '@/components/Header'
 import SliderIndicator from '@/components/SliderIndicator'
 import Image from 'next/image'
 
+// Amenities Display Component
+function AmenitiesDisplay({ productSlug }: { productSlug: string }) {
+  const [amenities, setAmenities] = useState<Array<{ id: number; name: string; icon: string }>>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Fetch product amenities from API
+    // For now, this is a placeholder - you'll need to create an API endpoint
+    // that fetches product by slug and returns its amenities
+    fetch(`/api/products?slug=${productSlug}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.amenities) {
+          setAmenities(data.amenities.map((pa: any) => pa.amenity))
+        }
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }, [productSlug])
+
+  if (loading) return null
+  if (amenities.length === 0) return null
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+      {amenities.map((amenity) => (
+        <div key={amenity.id} className="flex items-center space-x-3 p-3 bg-white rounded-lg border border-gray-200">
+          <span className="text-2xl">{amenity.icon}</span>
+          <span className="text-gray-700 font-medium">{amenity.name}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 const accommodations = {
   'the-starlight-haven': {
     name: 'The Starlight Haven',
@@ -380,7 +417,10 @@ export default function AccommodationDetailPage() {
                     </svg>
                     Accommodation Features
                   </h3>
-                  <ul className="space-y-4 text-gray-700">
+                  {/* Dynamic Amenities - Will be populated from API */}
+                  <AmenitiesDisplay productSlug={slug} />
+                  {/* Fallback static features if no amenities */}
+                  <ul className="space-y-4 text-gray-700 mt-4">
                     <li className="flex items-start space-x-3">
                       <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -392,24 +432,6 @@ export default function AccommodationDetailPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       <span className="text-lg">Private washroom & shower</span>
-                    </li>
-                    <li className="flex items-start space-x-3">
-                      <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-lg">Air conditioning & heat pump</span>
-                    </li>
-                    <li className="flex items-start space-x-3">
-                      <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-lg">Small kitchenette with coffee machine</span>
-                    </li>
-                    <li className="flex items-start space-x-3">
-                      <svg className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-lg">Free high-speed WiFi</span>
                     </li>
                   </ul>
                 </div>

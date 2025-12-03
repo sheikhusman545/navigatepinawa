@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Footer from '@/components/Footer'
+import ConditionalFooter from '@/components/ConditionalFooter'
 
 export const metadata: Metadata = {
   title: 'Navigate Pinawa - Check In To The Time Of Your Life',
@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   )
