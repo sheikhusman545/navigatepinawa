@@ -1,9 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
 // GET all products
 export async function GET() {
   try {
+    // Check if Prisma is available
+    if (!prisma) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     const products = await prisma.product.findMany({
       include: {
         category: true,
@@ -31,6 +43,14 @@ export async function GET() {
 // POST create new product
 export async function POST(request: NextRequest) {
   try {
+    // Check if Prisma is available
+    if (!prisma) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 503 }
+      )
+    }
+
     const body = await request.json()
     const { name, description, price, categoryId, status, mainImage, gallery, amenities } = body
 

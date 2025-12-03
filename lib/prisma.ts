@@ -4,7 +4,26 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+let prisma: PrismaClient | undefined
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+try {
+  if (process.env.NODE_ENV === 'production') {
+    prisma = new PrismaClient({
+      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    })
+  } else {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = new PrismaClient({
+        log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+      })
+    }
+    prisma = globalForPrisma.prisma
+  }
+} catch (error) {
+  // Prisma Client might not be available during build
+  console.warn('Prisma Client initialization failed:', error)
+  prisma = undefined
+}
+
+export { prisma }
 
