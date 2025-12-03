@@ -14,7 +14,6 @@
    
    **Value**: 
    ```
-   postgresql://postgres:Zarrar%4020@db.wadskabyntqukrjbbuwe.supabase.co:5432/postgres?sslmode=require
    ```
    
    **Environment**: Select all three:
