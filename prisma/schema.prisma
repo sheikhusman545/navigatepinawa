@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -63,7 +64,7 @@ model Order {
   user      User        @relation(fields: [userId], references: [id])
   status    String      @default("Pending")
   payment   String      @default("Pending")
-  total     Decimal     @db.Decimal(10, 2)
+  total     Decimal
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   items     OrderItem[]
@@ -76,7 +77,7 @@ model OrderItem {
   productId Int
   product   Product  @relation(fields: [productId], references: [id])
   quantity  Int      @default(1)
-  price     Decimal  @db.Decimal(10, 2)
+  price     Decimal
   createdAt DateTime @default(now())
 }
 
@@ -84,8 +85,8 @@ model Discount {
   id          Int      @id @default(autoincrement())
   code        String   @unique
   type        String   // "Percentage" or "Fixed"
-  value       Decimal  @db.Decimal(10, 2)
-  minPurchase Decimal? @db.Decimal(10, 2)
+  value       Decimal
+  minPurchase Decimal?
   usageLimit  Int?
   usageCount  Int      @default(0)
   status      String   @default("Active")

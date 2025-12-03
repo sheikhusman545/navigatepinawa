@@ -1,29 +1,116 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-// Mock categories data
-const mockCategories = [
-  { id: 1, name: 'Glamping Pods', description: 'Luxury glamping pods with modern amenities', products: 2, status: 'Active' },
-  { id: 2, name: 'Luxury Tents', description: 'Spacious luxury tents for nature lovers', products: 2, status: 'Active' },
-  { id: 3, name: 'Bunkies', description: 'Cozy cabin-style accommodations', products: 1, status: 'Active' },
-  { id: 4, name: 'Premium Sites', description: 'Premium camping sites with full amenities', products: 0, status: 'Inactive' },
-]
+interface Category {
+  id: number
+  name: string
+  description: string | null
+  products: number
+  status: string
+}
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState(mockCategories)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingCategory, setEditingCategory] = useState<number | null>(null)
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    status: 'Active',
+  })
+
+  // Fetch categories from API
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      if (response.ok) {
+        const data = await response.json()
+        setCategories(data)
+      } else {
+        console.error('Failed to fetch categories')
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filteredCategories = categories.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this category?')) {
-      setCategories(categories.filter(cat => cat.id !== id))
+      try {
+        const response = await fetch(`/api/categories/${id}`, {
+          method: 'DELETE',
+        })
+        if (response.ok) {
+          setCategories(categories.filter(cat => cat.id !== id))
+        } else {
+          const error = await response.json()
+          alert(error.error || 'Failed to delete category')
+        }
+      } catch (error) {
+        console.error('Error deleting category:', error)
+        alert('Failed to delete category')
+      }
     }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      const response = await fetch('/api/categories', {
+        method: editingCategory ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...(editingCategory && { id: editingCategory }),
+          name: formData.name,
+          description: formData.description,
+          status: formData.status,
+        }),
+      })
+
+      if (response.ok) {
+        const category = await response.json()
+        if (editingCategory) {
+          setCategories(categories.map(c => c.id === editingCategory ? category : c))
+        } else {
+          setCategories([...categories, category])
+        }
+        setShowAddModal(false)
+        setEditingCategory(null)
+        setFormData({ name: '', description: '', status: 'Active' })
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to save category')
+      }
+    } catch (error) {
+      console.error('Error saving category:', error)
+      alert('Failed to save category. Please try again.')
+    }
+  }
+
+  const handleEdit = (category: Category) => {
+    setEditingCategory(category.id)
+    setFormData({
+      name: category.name,
+      description: category.description || '',
+      status: category.status,
+    })
+    setShowAddModal(true)
   }
 
   return (
@@ -37,6 +124,7 @@ export default function CategoriesPage() {
         <button
           onClick={() => {
             setEditingCategory(null)
+            setFormData({ name: '', description: '', status: 'Active' })
             setShowAddModal(true)
           }}
           className="inline-flex items-center justify-center px-4 py-2 bg-navigatepinawa-blue text-white rounded-lg hover:bg-blue-900 transition-colors font-medium"
@@ -57,49 +145,58 @@ export default function CategoriesPage() {
         />
       </div>
 
-      {/* Categories Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCategories.map((category) => (
-          <div key={category.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{category.name}</h3>
-                <p className="text-sm text-gray-500">{category.description}</p>
-              </div>
-              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                category.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-              }`}>
-                {category.status}
-              </span>
-            </div>
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-              <span className="text-sm text-gray-600">{category.products} products</span>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => {
-                    setEditingCategory(category.id)
-                    setShowAddModal(true)
-                  }}
-                  className="text-sm text-navigatepinawa-blue hover:underline"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(category.id)}
-                  className="text-sm text-red-600 hover:underline"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {filteredCategories.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-500">No categories found</p>
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navigatepinawa-blue mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading categories...</p>
         </div>
+      )}
+
+      {/* Categories Grid */}
+      {!loading && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredCategories.map((category) => (
+              <div key={category.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{category.name}</h3>
+                    <p className="text-sm text-gray-500">{category.description || 'No description'}</p>
+                  </div>
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    category.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {category.status}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <span className="text-sm text-gray-600">{category.products} products</span>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(category)}
+                      className="text-sm text-navigatepinawa-blue hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(category.id)}
+                      className="text-sm text-red-600 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {filteredCategories.length === 0 && !loading && (
+            <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+              <p className="text-gray-500">No categories found</p>
+            </div>
+          )}
+        </>
       )}
 
       {/* Add/Edit Category Modal */}
@@ -109,27 +206,31 @@ export default function CategoriesPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               {editingCategory ? 'Edit Category' : 'Add New Category'}
             </h2>
-            <form className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Category Name</label>
                 <input
                   type="text"
-                  defaultValue={editingCategory ? categories.find(c => c.id === editingCategory)?.name : ''}
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navigatepinawa-blue"
+                  required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                 <textarea
                   rows={3}
-                  defaultValue={editingCategory ? categories.find(c => c.id === editingCategory)?.description : ''}
+                  value={formData.description}
+                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navigatepinawa-blue"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                 <select
-                  defaultValue={editingCategory ? categories.find(c => c.id === editingCategory)?.status : 'Active'}
+                  value={formData.status}
+                  onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value }))}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navigatepinawa-blue"
                 >
                   <option value="Active">Active</option>
@@ -142,6 +243,7 @@ export default function CategoriesPage() {
                   onClick={() => {
                     setShowAddModal(false)
                     setEditingCategory(null)
+                    setFormData({ name: '', description: '', status: 'Active' })
                   }}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                 >

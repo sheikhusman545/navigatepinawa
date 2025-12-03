@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import ImageUpload from '@/components/ImageUpload'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -29,6 +30,7 @@ export default function ProductsPage() {
   const [filterStatus, setFilterStatus] = useState('All')
   const [showAddModal, setShowAddModal] = useState(false)
   const [amenities, setAmenities] = useState<Array<{ id: number; name: string; icon: string; status: string }>>([])
+  const [dbCategories, setDbCategories] = useState<Array<{ id: number; name: string }>>([])
 
   // new product form state
   const [newProduct, setNewProduct] = useState({
@@ -50,12 +52,15 @@ export default function ProductsPage() {
     saleExcludeDates: [] as Date[], // Array of Date objects
   })
 
-  // Fetch amenities on component mount
+  // Fetch amenities and categories on component mount
   useEffect(() => {
-    fetch('/api/amenities')
-      .then(res => res.json())
-      .then(data => setAmenities(data))
-      .catch(err => console.error('Error fetching amenities:', err))
+    Promise.all([
+      fetch('/api/amenities').then(res => res.json()).catch(() => []),
+      fetch('/api/categories').then(res => res.json()).catch(() => [])
+    ]).then(([amenitiesData, categoriesData]) => {
+      setAmenities(amenitiesData || [])
+      setDbCategories(categoriesData || [])
+    })
   }, [])
 
   // Handle image upload
@@ -279,12 +284,18 @@ export default function ProductsPage() {
                 <span className="text-sm text-gray-500">{product.bookings} bookings</span>
               </div>
               <div className="flex space-x-2">
-                <button className="flex-1 px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+                <Link
+                  href={`/dashboard/products/${product.id}/edit`}
+                  className="flex-1 text-center px-3 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
                   Edit
-                </button>
-                <button className="flex-1 px-3 py-2 text-sm bg-navigatepinawa-blue text-white rounded-lg hover:bg-blue-900 transition-colors">
+                </Link>
+                <Link
+                  href={`/dashboard/products/${product.id}`}
+                  className="flex-1 text-center px-3 py-2 text-sm bg-navigatepinawa-blue text-white rounded-lg hover:bg-blue-900 transition-colors"
+                >
                   View
-                </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -321,9 +332,17 @@ export default function ProductsPage() {
                     onChange={(e) => setNewProduct(p => ({ ...p, category: e.target.value }))}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navigatepinawa-blue"
                   >
-                    <option>Glamping Pods</option>
-                    <option>Luxury Tents</option>
-                    <option>Bunkies</option>
+                    {dbCategories.length > 0 ? (
+                      dbCategories.map(cat => (
+                        <option key={cat.id} value={cat.name}>{cat.name}</option>
+                      ))
+                    ) : (
+                      <>
+                        <option>Glamping Pods</option>
+                        <option>Luxury Tents</option>
+                        <option>Bunkies</option>
+                      </>
+                    )}
                   </select>
                 </div>
                 <div>

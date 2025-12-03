@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Common amenity icons (emojis)
 const commonIcons = [
@@ -10,20 +10,16 @@ const commonIcons = [
   '🌲', '🏔️', '🌊', '🌅', '🌙', '☀️', '🌧️', '❄️', '🍖', '🥗'
 ]
 
-// Mock amenities data
-const mockAmenities = [
-  { id: 1, name: 'Air Conditioning', icon: '❄️', status: 'Active' },
-  { id: 2, name: 'Kitchenette', icon: '🍳', status: 'Active' },
-  { id: 3, name: 'Private Bathroom', icon: '🚿', status: 'Active' },
-  { id: 4, name: 'Hot Tub', icon: '🏊', status: 'Active' },
-  { id: 5, name: 'WiFi', icon: '📶', status: 'Active' },
-  { id: 6, name: 'Pet Friendly', icon: '🐕', status: 'Active' },
-  { id: 7, name: 'Fire Pit', icon: '🔥', status: 'Active' },
-  { id: 8, name: 'Coffee Machine', icon: '☕', status: 'Active' },
-]
+interface Amenity {
+  id: number
+  name: string
+  icon: string
+  status: string
+}
 
 export default function AmenitiesPage() {
-  const [amenities, setAmenities] = useState(mockAmenities)
+  const [amenities, setAmenities] = useState<Amenity[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingAmenity, setEditingAmenity] = useState<number | null>(null)
@@ -33,13 +29,47 @@ export default function AmenitiesPage() {
     status: 'Active',
   })
 
+  // Fetch amenities from API
+  useEffect(() => {
+    fetchAmenities()
+  }, [])
+
+  const fetchAmenities = async () => {
+    try {
+      const response = await fetch('/api/amenities')
+      if (response.ok) {
+        const data = await response.json()
+        setAmenities(data)
+      } else {
+        console.error('Failed to fetch amenities')
+      }
+    } catch (error) {
+      console.error('Error fetching amenities:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const filteredAmenities = amenities.filter(amenity =>
     amenity.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this amenity?')) {
-      setAmenities(amenities.filter(a => a.id !== id))
+      try {
+        const response = await fetch(`/api/amenities/${id}`, {
+          method: 'DELETE',
+        })
+        if (response.ok) {
+          setAmenities(amenities.filter(a => a.id !== id))
+        } else {
+          const error = await response.json()
+          alert(error.error || 'Failed to delete amenity')
+        }
+      } catch (error) {
+        console.error('Error deleting amenity:', error)
+        alert('Failed to delete amenity')
+      }
     }
   }
 
@@ -68,14 +98,33 @@ export default function AmenitiesPage() {
         setShowAddModal(false)
         setEditingAmenity(null)
         setNewAmenity({ name: '', icon: '🏕️', status: 'Active' })
+      } else {
+        const error = await response.json()
+        let errorMessage = error.error || 'Failed to save amenity'
+        
+        // Add helpful hints based on error type
+        if (error.code === 'CONNECTION_ERROR' || error.message?.includes('connection')) {
+          errorMessage += '\n\n💡 Database connection failed. Please check:'
+          errorMessage += '\n1. DATABASE_URL is set in Vercel environment variables'
+          errorMessage += '\n2. Database server is accessible'
+          errorMessage += '\n3. Network/firewall allows connection'
+        } else if (error.code === 'TABLE_NOT_FOUND' || error.message?.includes('table')) {
+          errorMessage += '\n\n💡 Database tables not created yet.'
+          errorMessage += '\nRun: npx prisma db push'
+        } else if (error.message) {
+          errorMessage += `\n\nDetails: ${error.message}`
+        }
+        
+        alert(errorMessage)
+        console.error('Error response:', error)
       }
     } catch (error) {
       console.error('Error saving amenity:', error)
-      alert('Failed to save amenity. Please try again.')
+      alert('Failed to save amenity. Please check your database connection and try again.')
     }
   }
 
-  const handleEdit = (amenity: typeof mockAmenities[0]) => {
+  const handleEdit = (amenity: Amenity) => {
     setEditingAmenity(amenity.id)
     setNewAmenity({
       name: amenity.name,
@@ -117,9 +166,19 @@ export default function AmenitiesPage() {
         />
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navigatepinawa-blue mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading amenities...</p>
+        </div>
+      )}
+
       {/* Amenities Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {filteredAmenities.map((amenity) => (
+      {!loading && (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredAmenities.map((amenity) => (
           <div
             key={amenity.id}
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
@@ -152,13 +211,15 @@ export default function AmenitiesPage() {
               </button>
             </div>
           </div>
-        ))}
-      </div>
+            ))}
+          </div>
 
-      {filteredAmenities.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
-          <p className="text-gray-500">No amenities found</p>
-        </div>
+          {filteredAmenities.length === 0 && !loading && (
+            <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+              <p className="text-gray-500">No amenities found</p>
+            </div>
+          )}
+        </>
       )}
 
       {/* Add/Edit Amenity Modal */}
