@@ -272,13 +272,41 @@ export default function DashboardPage() {
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Featured Accommodations</h2>
         <div className="grid grid-cols-5 gap-4">
-          {[
-            { id: 1, name: 'Starlight Haven', status: 'Available' },
-            { id: 2, name: 'Spruce Bliss', status: 'Occupied' },
-            { id: 3, name: 'Pine Loft', status: 'Available' },
-            { id: 4, name: 'Canopy Cove', status: 'Available' },
-            { id: 5, name: 'Wildwood Retreat', status: 'Occupied' },
-          ].map((camp) => (
+          {(() => {
+            // Calculate future dates dynamically
+            const today = new Date()
+            const getFutureDate = (daysFromNow: number) => {
+              const date = new Date(today)
+              date.setDate(date.getDate() + daysFromNow)
+              return date.toISOString().split('T')[0]
+            }
+            
+            const formatDate = (dateString: string | null) => {
+              if (!dateString) return null
+              const date = new Date(dateString + 'T00:00:00') // Set to start of day
+              const now = new Date()
+              now.setHours(0, 0, 0, 0) // Set to start of day for accurate comparison
+              
+              const diffTime = date.getTime() - now.getTime()
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+              
+              if (diffDays < 0) return 'Available now' // If date is in the past
+              if (diffDays === 0) return 'Today'
+              if (diffDays === 1) return 'Tomorrow'
+              if (diffDays < 7) return `In ${diffDays} days`
+              return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+            }
+            
+            return [
+              { id: 1, name: 'Starlight Haven', status: 'Available', availableFrom: null },
+              { id: 2, name: 'Spruce Bliss', status: 'Occupied', availableFrom: getFutureDate(2) },
+              { id: 3, name: 'Pine Loft', status: 'Available', availableFrom: null },
+              { id: 4, name: 'Canopy Cove', status: 'Available', availableFrom: null },
+              { id: 5, name: 'Wildwood Retreat', status: 'Occupied', availableFrom: getFutureDate(5) },
+            ].map((camp) => {
+              const availableText = formatDate(camp.availableFrom)
+              
+              return (
             <div
               key={camp.id}
               className="group relative overflow-hidden rounded-xl border-2 border-gray-200 hover:border-navigatepinawa-blue/50 hover:shadow-lg transition-all cursor-pointer bg-gray-50"
@@ -321,9 +349,21 @@ export default function DashboardPage() {
                 }`}>
                   {camp.status}
                 </p>
+                {camp.status === 'Occupied' && availableText && (
+                  <p className="text-xs text-center mt-1.5 text-gray-600">
+                    Free {availableText}
+                  </p>
+                )}
+                {camp.status === 'Available' && (
+                  <p className="text-xs text-center mt-1.5 text-green-600 font-medium">
+                    ✓ Ready now
+                  </p>
+                )}
               </div>
             </div>
-          ))}
+              )
+            })
+          })()}
         </div>
       </div>
 
