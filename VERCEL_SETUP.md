@@ -10,7 +10,6 @@ If you're getting 500 errors when trying to create amenities or categories, foll
 2. Navigate to **Settings** → **Environment Variables**
 3. Add the following variable:
    - **Name**: `DATABASE_URL`
-   - **Value**: `postgresql://postgres:Zarrar%4020@db.wadskabyntqukrjbbuwe.supabase.co:5432/postgres?sslmode=require`
    - **Environment**: Select all (Production, Preview, Development)
 
 ### 2. Alternative: Use Connection Pooling (Recommended for Supabase)
