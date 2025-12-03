@@ -31,7 +31,7 @@ export default function ContactSection() {
           </div>
 
           {/* RIGHT: FORM CARD */}
-          <div className="flex-1">
+          <div className="">
             <div className="rounded-md bg-white px-4 sm:px-6 py-6 sm:py-8 shadow-[0_30px_70px_rgba(0,0,0,0.08)] md:px-10 md:py-10">
               <h3 className="mb-6 sm:mb-8 font-sans text-xl sm:text-2xl md:text-3xl font-semibold tracking-[0.12em] uppercase text-[#202b46]">
                 WE&apos;RE HERE TO HELP YOU

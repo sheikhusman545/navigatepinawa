@@ -10,6 +10,7 @@ const menuItems = [
   { name: 'Users', href: '/dashboard/users', icon: '👥' },
   { name: 'Orders', href: '/dashboard/orders', icon: '📦' },
   { name: 'Products', href: '/dashboard/products', icon: '🏕️' },
+  { name: 'Availability', href: '/dashboard/availability', icon: '📅' },
   { name: 'Categories', href: '/dashboard/categories', icon: '📁' },
   { name: 'Amenities', href: '/dashboard/amenities', icon: '✨' },
   { name: 'Discounts', href: '/dashboard/discounts', icon: '🎫' },
